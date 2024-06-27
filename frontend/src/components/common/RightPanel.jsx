@@ -2,15 +2,33 @@ import { Link } from "react-router-dom";
 import RightPanelSkeleton from "../skeletons/RightPanelSkeleton";
 import { USERS_FOR_RIGHT_PANEL } from "../../utils/db/dummy";
 
+import { useQuery } from "@tanstack/react-query";
+
 const RightPanel = () => {
-  const isLoading = false;
+  const { data: suggestedUsers, isLoading } = useQuery({
+    queryKey: ["suggestedUsers"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/users/suggested");
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+  });
+
+  if(suggestedUsers?.length === 0) return <div className="md:w-64 w-0"></div>
 
   return (
     <div className="hidden lg:block my-4 mx-2">
       <div className="bg-[#16181C] p-4 rounded-md sticky top-2">
         <p className="font-bold">Who to follow</p>
         <div className="flex flex-col gap-4">
-          {/* item */}
           {isLoading && (
             <>
               <RightPanelSkeleton />
@@ -20,7 +38,7 @@ const RightPanel = () => {
             </>
           )}
           {!isLoading &&
-            USERS_FOR_RIGHT_PANEL?.map((user) => (
+            suggestedUsers?.map((user) => (
               <Link
                 to={`/profile/${user.username}`}
                 className="flex items-center justify-between gap-4"
@@ -29,13 +47,7 @@ const RightPanel = () => {
                 <div className="flex gap-2 items-center">
                   <div className="avatar">
                     <div className="w-8 rounded-full">
-                      <img
-                        src={
-                          "https://imgs.search.brave.com/EwOyFX85KluR1etw_SpvA3ho6qt3yzZpaOkhW-aemnU/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9waG90/b3Nub3cub3JnL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI0LzA0/L25vYml0YS1waG90/b18xNi5qcGc" ||
-                          user.profileImg ||
-                          "/avatar-placeholder.png"
-                        }
-                      />
+                      <img src={user.profileImg} />
                     </div>
                   </div>
                   <div className="flex flex-col">

@@ -29,18 +29,18 @@ const LoginPage = () => {
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || "Something went wrong 💔");
+          throw new Error(data.error || "Something went wrong");
         }
       } catch (error) {
         throw new Error(error);
       }
     },
     onSuccess: () => {
-      toast.success("Login successfull 💙");
+      toast.success("Login successfull");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (error) => { 
-      toast.error(error?.message || "Login failed 💔");
+      toast.error(error?.message || "Login failed");
     },
   });
 
