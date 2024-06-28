@@ -6,34 +6,34 @@ import Notification from "../models/notification.model.js";
 
 export const createPost = async (req, res) => {
   try {
-		const { text } = req.body;
-		let { img } = req.body;
-		const userId = req.user._id.toString();
+    const { text } = req.body;
+    let { img } = req.body;
+    const userId = req.user._id.toString();
 
-		const user = await User.findById(userId);
-		if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-		if (!text && !img) {
-			return res.status(400).json({ error: "Post must have text or image" });
-		}
+    if (!text && !img) {
+      return res.status(400).json({ error: "Post must have text or image" });
+    }
 
-		if (img) {
-			const uploadedResponse = await cloudinary.uploader.upload(img);
-			img = uploadedResponse.secure_url;
-		}
+    if (img) {
+      const uploadedResponse = await cloudinary.uploader.upload(img);
+      img = uploadedResponse.secure_url;
+    }
 
-		const newPost = new Post({
-			user: userId,
-			text,
-			img,
-		});
+    const newPost = new Post({
+      user: userId,
+      text,
+      img,
+    });
 
-		await newPost.save();
-		res.status(201).json(newPost);
-	} catch (error) {
-		res.status(500).json({ error: "Internal server error" });
-		console.log("Error in createPost controller: ", error);
-	}
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+    console.log("Error in createPost controller: ", error);
+  }
 };
 
 export const deletePost = async (req, res) => {
@@ -109,7 +109,11 @@ export const likeUnlikePost = async (req, res) => {
       // unlike post
       await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
       await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
-      return res.status(200).json({ message: "Post Unliked" });
+
+      const updatedLikes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+      return res.status(200).json(updatedLikes);
     } else {
       // Like post
       post.likes.push(userId);
@@ -123,7 +127,8 @@ export const likeUnlikePost = async (req, res) => {
       });
       await notification.save();
 
-      res.status(200).json({ message: "Post Liked" });
+      const updatedLikes = post.likes;
+      res.status(200).json(updatedLikes);
     }
   } catch (error) {
     console.log("Error in likeUnlikePost controller: ", error.message);
