@@ -11,10 +11,12 @@ import { Link } from "react-router-dom";
 const Sidebar = () => {
   const queryClient = useQueryClient();
 
+  const logoutUrl = new URL("/api/auth/logout", window.location.origin);
+
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch("api/auth/logout", {
+        const res = await fetch(logoutUrl, {
           method: "POST",
         });
         const data = await res.json();
@@ -31,7 +33,7 @@ const Sidebar = () => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (error) => {
-      toast.error("Logout failed");
+      toast.error("Visit home page Logout");
     },
   });
 
