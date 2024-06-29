@@ -7,7 +7,7 @@ import EditProfileModal from "./EditProfileModal";
 
 import { POSTS } from "../../utils/db/dummy";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { FaLink } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
