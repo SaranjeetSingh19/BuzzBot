@@ -34,8 +34,7 @@ const SignUpPage = () => {
 
         const data = await res.json();
         if (!res.ok)
-          throw new Error(data?.error || "Failed to create account 💔");
-        console.log(data);
+          throw new Error(data?.error || "Failed to create account");
         return data;
       } catch (error) {
         console.log(error);
@@ -43,11 +42,11 @@ const SignUpPage = () => {
       }
     },
     onSuccess: () => {
-      toast.success("Account created successfully 💚");
+      toast.success("Account created successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (error) => {
-      toast.error(error.message || "Account creation failed 💔");
+      toast.error(error.message || "Account creation failed");
     },
   });
 

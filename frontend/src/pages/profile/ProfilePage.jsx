@@ -54,7 +54,6 @@ const ProfilePage = () => {
 
   const { updateProfile, isUpdatingProfile } = useUpdateUserProfile();
 
-  console.log("VALUE OF THE USER IZZZZ: ", user);
 
   const isMyProfile = authUser._id === user?._id;
   const amIFollowing = authUser?.following.includes(user?._id);

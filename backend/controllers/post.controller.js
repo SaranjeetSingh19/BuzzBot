@@ -65,7 +65,7 @@ export const deletePost = async (req, res) => {
 };
 
 export const commentOnPost = async (req, res) => {
-  try {
+  try { 
     const { text } = req.body;
     const postId = req.params.id;
     const userId = req.user._id;

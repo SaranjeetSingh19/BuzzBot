@@ -167,3 +167,23 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error ⚠️" });
   }
 };
+
+export const searchUser = async (req, res) => {
+  const { searchQuery } = req.body; // get the search query from the input field
+
+  if (!searchQuery) {
+    return res.status(400).json({ error: "Search field is required" });
+  }
+  try {
+    const users = await User.find({ username: new RegExp(searchQuery, "i") });
+    if (users.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No users found with that username" });
+    }
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
